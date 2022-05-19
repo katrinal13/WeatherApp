@@ -43,24 +43,22 @@ public class GUI implements ActionListener, ItemListener
         ImageIcon image = new ImageIcon("src/weather.jpg");
         Image imageData = image.getImage();
         Image scaledImage = imageData.getScaledInstance(20, 20, java.awt.Image.SCALE_SMOOTH);
-        image = new ImageIcon(scaledImage);  // transform it back
+        image = new ImageIcon(scaledImage);
         JLabel pictureLabel = new JLabel(image);
         JLabel welcomeLabel = new JLabel("Current Weather");
         welcomeLabel.setFont(new Font("Helvetica", Font.BOLD, 20));
-        welcomeLabel.setForeground(Color.blue);
+        welcomeLabel.setForeground(Color.magenta);
 
         JPanel logoWelcomePanel = new JPanel();
         logoWelcomePanel.add(pictureLabel);
         logoWelcomePanel.add(welcomeLabel);
 
         image = new ImageIcon("src/placeholder.jpg");
-        imageData = image.getImage(); // transform it
-        scaledImage = imageData.getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-        image = new ImageIcon(scaledImage);  // transform it back
+        imageData = image.getImage();
+        scaledImage = imageData.getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH);
+        image = new ImageIcon(scaledImage);
         pictureLabel = new JLabel(image);
         weatherPanel.add(pictureLabel);
-
-        tempType.addItemListener(this);
 
         JPanel entryPanel = new JPanel();
         JLabel weatherLabel = new JLabel("Enter Zip Code: ");
@@ -80,6 +78,7 @@ public class GUI implements ActionListener, ItemListener
         frame.add(entryPanel, BorderLayout.WEST);
         frame.add(weatherPanel, BorderLayout.SOUTH);
 
+        tempType.addItemListener(this);
         sendButton.addActionListener(this);
         resetButton.addActionListener(this);
 
@@ -93,7 +92,8 @@ public class GUI implements ActionListener, ItemListener
 
         for(Component c : componentList)
         {
-            if(c instanceof JLabel || c instanceof JTextArea){
+            if(c instanceof JLabel || c instanceof JTextArea)
+            {
                 weatherPanel.remove(c);
             }
         }
@@ -101,28 +101,27 @@ public class GUI implements ActionListener, ItemListener
         weatherPanel.repaint();
     }
 
-    public void loadInformation()
-    {
-        String zip = zipCodeEntry.getText();
-        DataModel report = client.getWeatherDetails(zip);
-
-        double temp = report.getTempF();
-
-        if (tempType.isSelected())
+        public void loadInformation()
         {
-            temp = report.getTempC();
-        }
-        String info = "Temperature: " + temp + " Condition: " + report.getCondition();
+            String zip = zipCodeEntry.getText();
+            DataModel report = client.getWeatherDetails(zip);
+            double temp = report.getTempF();
 
-        ImageIcon image = new ImageIcon("src/" + report.getIcon().substring(21));
-        Image imageData = image.getImage();
-        Image scaledImage = imageData.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH);
-        image = new ImageIcon(scaledImage);
-        JLabel icon = new JLabel(image);
+            if (tempType.isSelected())
+            {
+                temp = report.getTempC();
+            }
+            String info = "Temperature: " + temp + "    Condition: " + report.getCondition();
 
-        weatherPanel.add(weatherInfo);
-        weatherPanel.add(icon);
-        weatherInfo.setText(info);
+            ImageIcon image = new ImageIcon("src/" + report.getIcon().substring(21));
+            Image imageData = image.getImage();
+            Image scaledImage = imageData.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH);
+            image = new ImageIcon(scaledImage);
+            JLabel icon = new JLabel(image);
+
+            weatherPanel.add(weatherInfo);
+            weatherPanel.add(icon);
+            weatherInfo.setText(info);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -140,12 +139,13 @@ public class GUI implements ActionListener, ItemListener
         }
     }
 
-    @Override
     public void itemStateChanged(ItemEvent e)
     {
-        int checkBoxOnOrOff = e.getStateChange();
-        JCheckBox cb = (JCheckBox)e.getSource();
-        loadDisplay();
-        loadInformation();
+        int check = e.getStateChange();
+        if (check == 1 || check == 2)
+        {
+            loadDisplay();
+            loadInformation();
+        }
     }
 }
